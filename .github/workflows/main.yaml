@@ -1,0 +1,46 @@
+name: Build, Push & Update Deployment to Argo CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-push-update:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ github.run_number }}
+
+    steps:
+      - name: Checkout application repo
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t akyldocker25/cicd-e2e:${{ env.IMAGE_TAG }} .
+
+      - name: Push Docker image
+        run: docker push akyldocker25/cicd-e2e:${{ env.IMAGE_TAG }}
+
+      - name: Checkout manifest repo
+        uses: actions/checkout@v3
+        with:
+          repository: akylgit/cicd-demo-manifests-repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: manifests
+
+      - name: Update deployment manifest
+        run: |
+          cd manifests
+          sed -i "s|image: akyldocker25/cicd-e2e:.*|image: akyldocker25/cicd-e2e:${{ env.IMAGE_TAG }}|" deploy.yaml
+
+      - name: Commit and push manifest update
+        run: |
+          cd manifests
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add deploy.yaml
+          git commit -m "Updated the deploy.yaml | GitHub Actions"
+          git push origin main
