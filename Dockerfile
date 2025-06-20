@@ -1,9 +1,8 @@
-FROM python:3.9-slim
+FROM python:3
+RUN pip install django==3.2
 
-WORKDIR /app
+RUN python manage.py migrate
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
 
 COPY . .
 
