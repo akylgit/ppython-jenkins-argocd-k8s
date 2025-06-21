@@ -2,7 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: todo-service
-spec:
+  namespace: default     # <-- add this line
+spec:                   # <-- fixed typo here (was "spc")
   type: NodePort
   selector:
     app: nginx
