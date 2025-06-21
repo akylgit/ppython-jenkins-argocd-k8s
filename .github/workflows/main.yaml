@@ -46,7 +46,7 @@ jobs:
 
       - name: Commit and push manifest update
         run: |
-          cd repo/deploy
+          cd deploy
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add deploy.yaml
