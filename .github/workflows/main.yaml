@@ -43,8 +43,10 @@ jobs:
         run: |
           cd repo/deploy
           sed -i "s|image: akyldocker25/cicd-e2e:.*|image: akyldocker25/cicd-e2e:${{ env.IMAGE_TAG }}|" deploy.yaml
+
+          cd ..  # back to repo root
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add deploy.yaml
+          git add deploy/deploy.yaml
           git commit -m "Updated the deploy.yaml | GitHub Actions" || echo "no changes to commit"
           git push origin main
