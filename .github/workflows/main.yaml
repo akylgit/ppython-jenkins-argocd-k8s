@@ -39,16 +39,12 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: repo
 
-      - name: Update deploy.yaml
+      - name: Update and push deploy.yaml
         run: |
           cd repo/deploy
-          sed -i "s|image: akyldocker25/cicd-e2e:.*|image: akyldocker25/cicd-e2e:${{ env.IMAGE_TAG }}|" deploy.yaml
-
-      - name: Commit and push manifest update
-        run: |
-          cd deploy
+          sed -i "s|image: akyldocker25/cicd-e2e:.*|image: akyldocker25/cicd-e2e:${{ env.IMAGE_TAG }}|" 
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add deploy.yaml
-          git commit -m "Updated the deploy.yaml | GitHub Actions"
+          git commit -m "Updated the deploy.yaml | GitHub Actions" || echo "no changes to commit"
           git push origin main
