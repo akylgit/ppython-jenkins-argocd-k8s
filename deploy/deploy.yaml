@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: todo
-        image: akyldocker25/cicd-e2e:69
+        image: akyldocker25/cicd-e2e:70
         ports:
         - containerPort: 8000
