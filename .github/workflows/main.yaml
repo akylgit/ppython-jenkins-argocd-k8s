@@ -35,13 +35,13 @@ jobs:
       - name: Checkout manifest repo
         uses: actions/checkout@v3
         with:
-          repository: akylgit/cicd-demo-manifests-repo
+          repository: https://github.com/akylgit/python-jenkins-argocd-k8s/tree/main/deploy
           token: ${{ secrets.GITHUB_TOKEN }}
           path: manifests
 
-      - name: Update deployment manifest
+      - name: Update deploy.yaml
         run: |
-          cd manifests
+          cd deploy
           sed -i "s|image: akyldocker25/cicd-e2e:.*|image: akyldocker25/cicd-e2e:${{ env.IMAGE_TAG }}|" deploy.yaml
 
       - name: Commit and push manifest update
