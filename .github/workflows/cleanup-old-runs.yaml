@@ -1,0 +1,26 @@
+name: Cleanup Old Runs
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Runs daily at midnight UTC
+  workflow_dispatch: # Allows you to trigger manually
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install GitHub CLI and jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          gh auth login --with-token <<< "${{ secrets.PAT }}"
+
+      - name: Delete old workflow runs
+        run: |
+          KEEP=2
+          WORKFLOW="Build, Push & Update Deployment to Argo CD"
+          gh run list --workflow "$WORKFLOW" --limit 100 --json databaseId | \
+          jq -r ".[${KEEP}:] | .[].databaseId" | while read id; do
+            echo "Deleting run ID: $id"
+            gh run delete "$id" --confirm
+          done
