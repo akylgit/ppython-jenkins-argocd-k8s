@@ -1,7 +1,7 @@
-name: Cleanup Old Runs
+#name: Cleanup Old Runs
 
-on:
-  schedule:
+#on:
+ # schedule:
     - cron: "0 0 * * *" # Runs daily at midnight UTC
   workflow_dispatch: # Allows manual trigger
 
@@ -27,3 +27,4 @@ jobs:
             echo "Deleting run ID: $id"
             echo "y" | gh run delete "$id" --repo "$REPO"
           done
+
